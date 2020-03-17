@@ -15,5 +15,7 @@ namespace MyBank.Entities
         public DateTime BirthDate { get; set; }
         public string Address { get; set; }
         public int Rating { get; set; } = 2;
+
+        public ICollection<Account> Accounts { get; set; }
     }
 }
