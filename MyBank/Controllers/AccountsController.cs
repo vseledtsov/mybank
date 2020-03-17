@@ -22,6 +22,17 @@ namespace MyBank.Controllers
             _context = context;
         }
 
+        [HttpGet]
+        public async Task<List<AccountModel>> Get(int customerId)
+        {
+            return await _context.Accounts.Where(x => x.CustomerId == customerId)
+                .Select(x => new AccountModel()
+                {
+                    Id = x.Id,
+                    Balance = x.Balance
+                }).ToListAsync();
+        }
+
         [HttpPost]
         public async Task<ActionResult> Post([FromBody]AddAccountModel model)
         {
