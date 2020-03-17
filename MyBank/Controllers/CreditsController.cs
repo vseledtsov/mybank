@@ -22,6 +22,21 @@ namespace MyBank.Controllers
             _context = context;
         }
 
+        [HttpGet]
+        public async Task<List<CreditModel>> Get(int customerId)
+        {
+            return await _context.Credits.Where(x => x.CustomerId == customerId)
+                .Select(x => new CreditModel()
+                {
+                    Id = x.Id,
+                    Amount = x.Amount,
+                    OriginalAmount = x.OriginalAmount,
+                    OriginalTerm = x.CreditTerm,
+                    RemainingTerm = (int)(x.CreditDate.AddMonths(x.CreditTerm) - DateTime.UtcNow).TotalDays / 30
+                }).ToListAsync();
+        }
+
+
         [HttpPost]
         public async Task<ActionResult> Post([FromBody]AddCreditModel model)
         {
@@ -43,7 +58,7 @@ namespace MyBank.Controllers
             credit.Amount = model.Amount;
             credit.OriginalAmount = model.Amount;
             credit.CreditTerm = model.CreditTerm;
-            
+
             _context.Credits.Add(credit);
             await _context.SaveChangesAsync();
             return StatusCode(201, credit.Id);
