@@ -43,5 +43,44 @@ namespace MyBank.Controllers
 
             return StatusCode(201, account.Id);
         }
+
+        [HttpPost("{id}/transfer")]
+        public async Task<ActionResult> Transfer(int id, [FromBody]TransferModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            var sender = await _context.Accounts.FindAsync(id);
+            var recepient = await _context.Accounts.FindAsync(model.RecepientId);
+            if (sender == null || recepient == null)
+            {
+                return NotFound("Account not found");
+            }
+
+            if (sender.Balance < model.Amount)
+            {
+                return BadRequest("Not enough money,  milord)");
+            }
+
+            using (var transaction = _context.Database.BeginTransaction())
+            {
+                try
+                {
+                    sender.Balance -= model.Amount;
+                    recepient.Balance += model.Amount;
+                    await _context.SaveChangesAsync();
+                    await transaction.CommitAsync();
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    return StatusCode(500);
+                }
+            }
+
+            return Ok();
+        }
     }
 }
