@@ -15,5 +15,6 @@ namespace MyBank.Data
 
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Account> Accounts { get; set; }
+        public DbSet<Credit> Credits { get; set; }
     }
 }

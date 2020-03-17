@@ -17,5 +17,6 @@ namespace MyBank.Entities
         public int Rating { get; set; } = 2;
 
         public ICollection<Account> Accounts { get; set; }
+        public ICollection<Credit> Credits { get; set; }
     }
 }
