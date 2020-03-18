@@ -75,5 +75,17 @@ namespace MyBank.Controllers
 
             return new PagedList<TransferModel>(items, count, page, pageSize);
         }
+
+        [HttpGet("{id}/balance")]
+        public async Task<ActionResult<double>> GetBalance(int id)
+        {
+            var customer = await _context.Customers.FindAsync(id);
+            if (customer == null)
+            {
+                return NotFound("Customer not found");
+            }
+            var balance = await _context.Accounts.Where(x => x.CustomerId == id).SumAsync(x => x.Balance);
+            return balance;
+        }
     }
 }
