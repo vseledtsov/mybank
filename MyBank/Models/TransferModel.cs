@@ -16,5 +16,9 @@ namespace MyBank.Models
         public int RecepientId { get; set; }    
 
         public double Amount { get; set; }
+
+        public string RecepientName { get; set; }
+
+        public string SenderName { get; set; }
     }
 }
