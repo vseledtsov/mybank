@@ -16,6 +16,6 @@ namespace MyBank.Models
         public int OriginalTerm { get; set; }
         public int RemainingTerm { get; set; }
         public double Amount { get; set; }
-        public double OriginalAmount { get; set; }
+        public double OriginalAmount { get; set; }       
     }
 }

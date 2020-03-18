@@ -12,7 +12,7 @@ using MyBank.Models;
 
 namespace MyBank.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CreditsController : ControllerBase
@@ -36,6 +36,22 @@ namespace MyBank.Controllers
                     OriginalTerm = x.CreditTerm,
                     RemainingTerm = (int)(x.CreditDate.AddMonths(x.CreditTerm) - DateTime.UtcNow).TotalDays / 30
                 }).ToListAsync();
+        }
+
+        [HttpGet("overdue")]
+        public async Task<List<OverdueCreditModel>> Get()
+        {
+            var today = DateTime.UtcNow.Date;
+            return await _context.Credits
+                .Where(c => c.CreditDate.AddMonths(c.CreditTerm) < today && c.Amount > 0)
+                .Select(x => new OverdueCreditModel()
+                {
+                    Id = x.Id,
+                    Amount = x.Amount,
+                    OriginalAmount = x.OriginalAmount,
+                    CustomerName = x.Customer.FirstName + " " + x.Customer.LastName,
+                })
+                .ToListAsync();
         }
 
 
