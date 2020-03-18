@@ -12,7 +12,7 @@ using MyBank.Models;
 
 namespace MyBank.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CreditsController : ControllerBase
