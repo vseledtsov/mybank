@@ -113,9 +113,9 @@ namespace MyBank.Controllers
                 return BadRequest();
             }
 
-            var sender = await _context.Accounts.FindAsync(id);
+            var sender = await _context.Accounts.Include(x => x.Customer).FirstOrDefaultAsync(x => x.Id == id);
             var recipient = await _context.Accounts.FindAsync(model.RecipientId);
-            
+
             if (sender == null || recipient == null)
             {
                 return NotFound("Sender or recipient not found");
@@ -147,6 +147,12 @@ namespace MyBank.Controllers
                     sender.Balance -= model.Amount;
                     recipient.Balance += model.Amount;
                     credit.Amount -= model.Amount;
+
+                    //If a customer paid off a credit he will be awarded to a better rating class but at maximum to ‚1‘.
+                    if (credit.Amount <= 0 && credit.CreditDate.AddMonths(credit.CreditTerm) >= DateTime.UtcNow && sender.Customer.Rating > 1)
+                    {
+                        sender.Customer.Rating -= 1;
+                    }
 
                     await _context.SaveChangesAsync();
                     await transaction.CommitAsync();
