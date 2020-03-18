@@ -153,6 +153,11 @@ namespace MyBank.Controllers
                     {
                         sender.Customer.Rating -= 1;
                     }
+                    //If a customer didn‘t paid off a credit before the remaining term is below zero his rating class will be set to ‚4‘. 
+                    if (credit.Amount > 0 && credit.CreditDate.AddMonths(credit.CreditTerm) < DateTime.UtcNow)
+                    {
+                        sender.Customer.Rating = 4;
+                    }
 
                     await _context.SaveChangesAsync();
                     await transaction.CommitAsync();
