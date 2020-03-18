@@ -13,8 +13,22 @@ namespace MyBank.Data
        : base(options)
         { }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Transfer>()
+                .HasOne(x => x.Recepient)
+                .WithMany(x => x.Incoming)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Transfer>()
+             .HasOne(x => x.Sender)
+             .WithMany(x => x.Outgoing)
+             .OnDelete(DeleteBehavior.NoAction);
+        }
+
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Account> Accounts { get; set; }
         public DbSet<Credit> Credits { get; set; }
+        public DbSet<Transfer> Transfers { get; set; }
     }
 }

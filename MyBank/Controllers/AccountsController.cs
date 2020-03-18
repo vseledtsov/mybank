@@ -56,7 +56,7 @@ namespace MyBank.Controllers
         }
 
         [HttpPost("{id}/transfer")]
-        public async Task<ActionResult> Transfer(int id, [FromBody]TransferModel model)
+        public async Task<ActionResult> Transfer(int id, [FromBody]TransferMoneyModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -79,8 +79,17 @@ namespace MyBank.Controllers
             {
                 try
                 {
+                    var transfer = new Transfer()
+                    {
+                        SenderId = sender.Id,
+                        RecepientId = recepient.Id,
+                        Amount = model.Amount
+                    };
+                    _context.Transfers.Add(transfer);
+
                     sender.Balance -= model.Amount;
                     recepient.Balance += model.Amount;
+                    
                     await _context.SaveChangesAsync();
                     await transaction.CommitAsync();
                 }

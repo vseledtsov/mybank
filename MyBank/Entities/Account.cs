@@ -14,5 +14,10 @@ namespace MyBank.Entities
         public Customer Customer { get; set; }
 
         public double Balance { get; set; }
+
+        public ICollection<Transfer> Incoming { get; set; }
+
+        public ICollection<Transfer> Outgoing { get; set; }
+
     }
 }
