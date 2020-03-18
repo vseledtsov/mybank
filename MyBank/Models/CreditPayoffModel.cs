@@ -5,8 +5,11 @@ using System.Threading.Tasks;
 
 namespace MyBank.Models
 {
-    public class TransferMoneyModel
-    {
+    public class CreditPayoffModel
+    {       
+        /// <summary>
+        /// Bank Account Id
+        /// </summary>
         public int RecipientId { get; set; }
 
         public double Amount { get; set; }

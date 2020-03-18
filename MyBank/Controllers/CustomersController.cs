@@ -50,7 +50,7 @@ namespace MyBank.Controllers
         [HttpGet("{id}/transfers")]
         public async Task<PagedList<TransferModel>> Get(int id, string orderBy = null, int page = 1, int pageSize = 20)
         {
-            var query = _context.Transfers.Where(x => x.Recepient.CustomerId == id || x.Sender.CustomerId == id);
+            var query = _context.Transfers.Where(x => x.Recipient.CustomerId == id || x.Sender.CustomerId == id);
 
             if (!string.IsNullOrEmpty(orderBy))
             {
@@ -64,10 +64,10 @@ namespace MyBank.Controllers
                 {
                     Id = x.Id,
                     SenderId = x.SenderId,
-                    RecepientId = x.RecepientId,
+                    RecipientId = x.RecipientId,
                     TransferDate = x.TransferDate,
                     Amount = x.Amount,
-                    RecepientName = x.Recepient.Customer.FirstName + " " + x.Recepient.Customer.LastName,
+                    RecipientName = x.Recipient.Customer.FirstName + " " + x.Recipient.Customer.LastName,
                     SenderName = x.Sender.Customer.FirstName + " " + x.Sender.Customer.LastName,
                 }).ToListAsync();
 

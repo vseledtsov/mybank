@@ -13,11 +13,11 @@ namespace MyBank.Models
 
         public int SenderId { get; set; }      
 
-        public int RecepientId { get; set; }    
+        public int RecipientId { get; set; }    
 
         public double Amount { get; set; }
 
-        public string RecepientName { get; set; }
+        public string RecipientName { get; set; }
 
         public string SenderName { get; set; }
     }

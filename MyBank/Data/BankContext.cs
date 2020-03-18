@@ -16,7 +16,7 @@ namespace MyBank.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Transfer>()
-                .HasOne(x => x.Recepient)
+                .HasOne(x => x.Recipient)
                 .WithMany(x => x.Incoming)
                 .OnDelete(DeleteBehavior.NoAction);
 

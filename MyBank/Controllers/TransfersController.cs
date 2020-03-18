@@ -29,7 +29,7 @@ namespace MyBank.Controllers
                 {
                     Id = x.Id,
                     SenderId = x.SenderId,
-                    RecepientId = x.RecepientId,
+                    RecipientId = x.RecipientId,
                     TransferDate = x.TransferDate,
                     Amount = x.Amount
                 })

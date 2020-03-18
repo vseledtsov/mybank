@@ -64,7 +64,7 @@ namespace MyBank.Controllers
             }
 
             var sender = await _context.Accounts.FindAsync(id);
-            var recepient = await _context.Accounts.FindAsync(model.RecepientId);
+            var recepient = await _context.Accounts.FindAsync(model.RecipientId);
             if (sender == null || recepient == null)
             {
                 return NotFound("Account not found");
@@ -82,14 +82,70 @@ namespace MyBank.Controllers
                     var transfer = new Transfer()
                     {
                         SenderId = sender.Id,
-                        RecepientId = recepient.Id,
+                        RecipientId = recepient.Id,
                         Amount = model.Amount
                     };
                     _context.Transfers.Add(transfer);
 
                     sender.Balance -= model.Amount;
                     recepient.Balance += model.Amount;
-                    
+
+                    await _context.SaveChangesAsync();
+                    await transaction.CommitAsync();
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    return StatusCode(500);
+                }
+            }
+
+            return Ok();
+        }
+
+        [HttpPost("{id}/credit/{creditId}/payoff")]
+        public async Task<ActionResult> Transfer(int id, int creditId, [FromBody]CreditPayoffModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            var sender = await _context.Accounts.FindAsync(id);
+            var recipient = await _context.Accounts.FindAsync(model.RecipientId);
+            
+            if (sender == null || recipient == null)
+            {
+                return NotFound("Sender or recipient not found");
+            }
+
+            var credit = await _context.Credits.FindAsync(id);
+            if (credit == null)
+            {
+                return NotFound("Credit not found");
+            }
+            if (sender.Balance < model.Amount)
+            {
+                return BadRequest("Not enough money,  milord)");
+            }
+
+            using (var transaction = _context.Database.BeginTransaction())
+            {
+                try
+                {
+                    var transfer = new Transfer()
+                    {
+                        SenderId = sender.Id,
+                        RecipientId = model.RecipientId,//bank account Id
+                        Amount = model.Amount
+                    };
+
+                    _context.Transfers.Add(transfer);
+
+                    sender.Balance -= model.Amount;
+                    recipient.Balance += model.Amount;
+                    credit.Amount -= model.Amount;
+
                     await _context.SaveChangesAsync();
                     await transaction.CommitAsync();
                 }
